@@ -17,13 +17,19 @@ pipeline {
         sh 'node --version'
       }
     }
-      stage('database') {
-      agent {
-        docker { image 'mysql:latest' }
-      }
-      steps {
-        sh 'select * from XYZ'
-      }
+      stage('Database') {
+    agent {
+        docker {
+            image 'mysql:latest'
+            args '-e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=testdb -p 3306:3306'
+        }
     }
+    steps {
+        sh 'mysql --version'  // just checks MySQL client inside container
+        // Example: Run SQL if you have init.sql in repo
+        // sh 'mysql -uroot -proot testdb < init.sql'
+    }
+}
+
   }
 }
